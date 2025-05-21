@@ -1,33 +1,35 @@
-//your JS code here. If required.
-function getNumbers() {
-  // Returns a promise that resolves with an array of numbers
-  return new Promise((resolve, reject) => {
+function getInitialArray() {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve([1, 2, 3, 4]);
-    }, 3000);
+    }, 3000); // initial delay of 3 seconds
   });
 }
 
-getNumbers()
-  .then((numbers) => {
-    // First promise: filter out odd numbers after 1 second
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const evenNumbers = numbers.filter((num) => num % 2 === 0);
-        document.getElementById("output").textContent = evenNumbers.join(", ");
-        resolve(evenNumbers);
-      }, 1000); // Delay of 1 second
-    });
-  })
-  .then((evenNumbers) => {
-    // Second promise: multiply even numbers by 2 after 2 seconds
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const multipliedNumbers = evenNumbers.map((num) => num * 2);
-        document.getElementById("output").textContent =
-          multipliedNumbers.join(", ");
-        resolve(multipliedNumbers);
-      }, 2000); // Delay of 2 seconds
-    });
-  })
-  .catch((err) => console.error(err));
+function filterEvenNumbers(array) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const evenNumbers = array.filter(num => num % 2 === 0);
+      document.getElementById("output").textContent = evenNumbers.join(',');
+      resolve(evenNumbers);
+    }, 1000); // delay of 1 second after initial resolution
+  });
+}
+
+function multiplyByTwo(array) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const multiplied = array.map(num => num * 2);
+      document.getElementById("output").textContent = multiplied.join(',');
+      resolve(multiplied);
+    }, 2000); // delay of 2 seconds after filtering
+  });
+}
+
+// Chain the promises
+getInitialArray()
+  .then(filterEvenNumbers)
+  .then(multiplyByTwo)
+  .catch(error => {
+    console.error("Something went wrong:", error);
+  });
